@@ -7,6 +7,8 @@ defmodule ExMeck.MixProject do
       version: "0.1.0",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
+      description: description(),
+      package: package(),
       deps: deps()
     ]
   end
@@ -26,6 +28,10 @@ defmodule ExMeck.MixProject do
       {:gen_state_machine, "~> 2.0", only: :test},
       {:propcheck, "~> 1.0", only: :test}
     ]
+  end
+
+  defp description() do
+    "A mocking library particularly suitable for stateful property based testing."
   end
 
   defp package do
