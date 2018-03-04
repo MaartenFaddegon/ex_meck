@@ -1,6 +1,8 @@
 defmodule ExMeck do
   @moduledoc """
   A mocking library particularly suitable for stateful property based testing.
+
+  See test/ex_meck_test.ex for example usage.
   """
 
   @doc """

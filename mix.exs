@@ -27,4 +27,14 @@ defmodule ExMeck.MixProject do
       {:propcheck, "~> 1.0", only: :test}
     ]
   end
+
+  defp package do
+    [
+      name: "ExMeck",
+      files: ["lib/exmeck.ex", "mix.exs"],
+      maintainers: ["Maarten Faddegon"],
+      licenses: ["MIT License"],
+      links: %{"GitHub" => "https://github.com/MaartenFaddegon/ex_meck"}
+    ]
+  end
 end

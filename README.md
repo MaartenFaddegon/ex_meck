@@ -1,6 +1,8 @@
 # ExMeck
 
-**TODO: Add description**
+A mocking library particularly suitable for stateful property based testing.
+
+See test/ex_meck_test.ex for example usage.
 
 ## Installation
 
