@@ -54,7 +54,7 @@ defmodule ExMeck do
   def contains(_mod, _spec, timeout) when timeout <= 0, do: {:error, :no_match}
   def contains(mod, spec, timeout) when timeout > 0 do
     history = :meck.history(mod)
-    case Enum.filter?(history, fn call -> matches? spec, call end) do
+    case Enum.filter(history, fn call -> matches? spec, call end) do
       [match|_]  -> {:ok, match}
       []         -> :timer.sleep 100
                     contains(mod, spec, timeout - 100)
