@@ -45,6 +45,22 @@ defmodule ExMeck do
     end
   end
 
+  @doc """
+  As contains?/3 but returns {:error, :no_match} when no match was found or {:ok, match} with the match.
+
+  This is useful when the match is used for further validation.
+  """
+  def contains(mod, spec, timeout \\ 1000)
+  def contains(_mod, _spec, timeout) when timeout <= 0, do: {:error, :no_match}
+  def contains(mod, spec, timeout) when timeout > 0 do
+    history = :meck.history(mod)
+    case Enum.filter?(history, fn call -> matches? spec, call end) do
+      [match|_]  -> {:ok, match}
+      []         -> :timer.sleep 100
+                    contains(mod, spec, timeout - 100)
+    end
+  end
+
 
   @doc """
   Reset the history of module mod.
