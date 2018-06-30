@@ -10,6 +10,10 @@ defmodule ExMeck do
   """
   def new(mod, opts \\ []), do: :meck.new(mod, opts)
 
+  @doc """
+  Stop all mocked modules.
+  """
+  def unload(), do: :meck.unload()
 
   @doc """
   Stop mocking the module.
@@ -82,7 +86,7 @@ defmodule ExMeck do
       false -> false
     end
   end
-  defp matches?(:_, _), do: 
+  defp matches?(:_, _), do:
     true
   defp matches?(x,y), do:
     x == y
