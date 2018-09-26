@@ -25,6 +25,10 @@ defmodule ExMeck do
   """
   def expect(mod, fun, expectation), do: :meck.expect(mod, fun, expectation)
 
+  @doc """
+  Deletes the expectation created with expect/3
+  """
+  def delete(mod, fun, arity), do: :meck.delete(mod, fun, arity)
 
   @doc """
   Verify wheter the history of the mocked module mod contains a call that satisfies specification spec.
@@ -44,8 +48,8 @@ defmodule ExMeck do
     history = :meck.history(mod)
     case Enum.any?(history, fn call -> matches? spec, call end) do
       true  -> true
-      false -> :timer.sleep 100
-               contains?(mod, spec, timeout - 100)
+      false -> :timer.sleep 20
+               contains?(mod, spec, timeout - 20)
     end
   end
 
@@ -60,8 +64,8 @@ defmodule ExMeck do
     history = :meck.history(mod)
     case Enum.filter(history, fn call -> matches? spec, call end) do
       [match|_]  -> {:ok, match}
-      []         -> :timer.sleep 100
-                    contains(mod, spec, timeout - 100)
+      []         -> :timer.sleep 20
+                    contains(mod, spec, timeout - 20)
     end
   end
 

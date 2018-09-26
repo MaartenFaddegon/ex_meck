@@ -23,7 +23,7 @@ defmodule ExMeck.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [ 
-      {:meck, "~> 0.8.8"},
+      {:meck, "~> 0.8.11"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:gen_state_machine, "~> 2.0", only: :test},
       {:propcheck, "~> 1.0", only: :test}
