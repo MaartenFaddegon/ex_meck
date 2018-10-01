@@ -42,14 +42,13 @@ defmodule ExMeck do
 
   The atom :_ can be used as a don't care value.
   """
-  def contains?(mod, spec, timeout \\ 1000)
-  def contains?(_mod, _spec, timeout) when timeout <= 0, do: false
-  def contains?(mod, spec, timeout) when timeout > 0 do
-    history = :meck.history(mod)
-    case Enum.any?(history, fn call -> matches? spec, call end) do
-      true  -> true
-      false -> :timer.sleep 20
-               contains?(mod, spec, timeout - 20)
+
+  def contains?(m, {_p, {_m, f, a}, _r}, timeout \\ 1000, times \\ 1) do
+    try do
+      :ok = :meck.wait(times, m, f, a, timeout)
+      true
+    catch :error, :timeout ->
+      false
     end
   end
 
@@ -58,17 +57,17 @@ defmodule ExMeck do
 
   This is useful when the match is used for further validation.
   """
-  def contains(mod, spec, timeout \\ 1000)
-  def contains(_mod, _spec, timeout) when timeout <= 0, do: {:error, :no_match}
-  def contains(mod, spec, timeout) when timeout > 0 do
-    history = :meck.history(mod)
-    case Enum.filter(history, fn call -> matches? spec, call end) do
-      [match|_]  -> {:ok, match}
-      []         -> :timer.sleep 20
-                    contains(mod, spec, timeout - 20)
+  def contains(m, {_p, {_m, f, a}, _r} = spec, timeout \\ 1000, times \\ 1) do
+    try do
+      :ok = :meck.wait(times, m, f, a, timeout)
+      history = :meck.history(m)
+      case Enum.filter(history, fn(call) -> matches?(spec, call) end) do
+        [match|_]  -> {:ok, match}
+        []         -> {:error, :no_match}
+      end
+    catch :error, :timeout -> {:error, :no_match}
     end
   end
-
 
   @doc """
   Reset the history of module mod.
