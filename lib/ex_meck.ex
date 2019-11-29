@@ -43,10 +43,16 @@ defmodule ExMeck do
   The atom :_ can be used as a don't care value.
   """
 
-  def contains?(m, {_p, {_m, f, a}, _r}, timeout \\ 1000, times \\ 1) do
+  def contains?(m, {_p, {_m, f, a}, _r} = spec, timeout \\ 1000, times \\ 1) do
     try do
       :ok = :meck.wait(times, m, f, a, timeout)
-      true
+
+      history = :meck.history(m)
+
+      case Enum.filter(history, fn(call) -> matches?(spec, call) end) do
+        [_match|_]  -> true
+        []          -> false
+      end
     catch :error, :timeout ->
       false
     end
