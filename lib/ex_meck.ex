@@ -43,19 +43,10 @@ defmodule ExMeck do
   The atom :_ can be used as a don't care value.
   """
 
-  def contains?(m, {_p, {_m, f, a}, _r} = spec, timeout \\ 1000, times \\ 1) do
-    try do
-      :ok = :meck.wait(times, m, f, a, timeout)
-
-      history = :meck.history(m)
-
-      case Enum.filter(history, fn(call) -> matches?(spec, call) end) do
-        [_match|_]  -> true
-        []          -> false
-      end
-    catch :error, :timeout ->
-      false
-    end
+  def contains?(m, spec, timeout \\ 1000, times \\ 1) do
+    from_match = fn(_match) -> true end
+    no_match_value = false
+    do_contains m, spec, timeout, times, from_match, no_match_value
   end
 
   @doc """
@@ -63,15 +54,22 @@ defmodule ExMeck do
 
   This is useful when the match is used for further validation.
   """
-  def contains(m, {_p, {_m, f, a}, _r} = spec, timeout \\ 1000, times \\ 1) do
+  def contains(m, spec, timeout \\ 1000, times \\ 1) do
+    from_match = fn(match) -> {:ok, match} end
+    no_match_value = {:error, :no_match}
+    do_contains m, spec, timeout, times, from_match, no_match_value
+  end
+
+
+  defp do_contains(m, {_p, {_m, f, a}, _r} = spec, timeout, times, from_match, no_match_value) do
     try do
       :ok = :meck.wait(times, m, f, a, timeout)
       history = :meck.history(m)
       case Enum.filter(history, fn(call) -> matches?(spec, call) end) do
-        [match|_]  -> {:ok, match}
-        []         -> {:error, :no_match}
+        [match|_]  -> from_match.(match)
+        []         -> no_match_value
       end
-    catch :error, :timeout -> {:error, :no_match}
+    catch :error, :timeout -> no_match_value
     end
   end
 
