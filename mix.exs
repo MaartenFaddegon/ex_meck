@@ -4,7 +4,7 @@ defmodule ExMeck.MixProject do
   def project do
     [
       app: :ex_meck,
-      version: "0.3.0",
+      version: "0.3.1",
       elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
       description: description(),
@@ -23,7 +23,7 @@ defmodule ExMeck.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [ 
-      {:meck, "~> 0.8.11"},
+      {:meck, "~> 0.9.0"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:gen_state_machine, "~> 2.0", only: :test},
       {:propcheck, "~> 1.0", only: :test}
